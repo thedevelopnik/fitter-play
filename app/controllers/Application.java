@@ -1,6 +1,6 @@
 package controllers;
 
-import TwitterStream.SampleStream;
+import twitterStream.SampleStream;
 import play.mvc.*;
 import play.db.jpa.*;
 import views.html.*;
@@ -8,6 +8,7 @@ import models.Person;
 import play.data.FormFactory;
 import javax.inject.Inject;
 import java.util.List;
+
 
 import static play.libs.Json.*;
 
@@ -19,10 +20,7 @@ public class Application extends Controller {
     @Inject
     FormFactory formFactory;
 
-
-
     public Result index() throws InterruptedException {
-        sampleStream.run();
         return ok(index.render());
     }
 

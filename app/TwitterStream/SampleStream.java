@@ -1,4 +1,4 @@
-package TwitterStream;
+package twitterStream;
 
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Constants;
@@ -7,7 +7,6 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
-import org.hibernate.annotations.SourceType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import play.Configuration;
@@ -25,16 +24,18 @@ import java.util.concurrent.TimeUnit;
  * Created by davidsudia on 5/2/16.
  */
 @Singleton
-public class SampleStream {
+public class SampleStream implements Runnable {
+
+    private final Configuration configuration;
 
     @Inject
-    private Configuration configuration;
+    public SampleStream(Configuration configuration) {
+        this.configuration = configuration;
+        (new Thread(this)).start();
+    }
 
-
-
-    public void run() throws InterruptedException {
-
-        BlockingQueue<String> queue = new LinkedBlockingDeque<String>(10000);
+    public void run() {
+        BlockingQueue<String> queue = new LinkedBlockingDeque<>(10000);
 
         StatusesSampleEndpoint endpoint = new StatusesSampleEndpoint();
 
@@ -44,11 +45,6 @@ public class SampleStream {
         String consumerSecret = configuration.getString("twitter.consumerSecret");
         String token = configuration.getString("twitter.token");
         String secret = configuration.getString("twitter.secret");
-
-        System.out.println(consumerKey);
-        System.out.println(consumerSecret);
-        System.out.println(token);
-        System.out.println(secret);
 
         Authentication auth = new OAuth1(consumerKey, consumerSecret, token, secret);
 
@@ -65,7 +61,7 @@ public class SampleStream {
             PrintWriter writer = new PrintWriter("OneThousandTweets.json", "UTF-8");
             writer.print("[");
 
-            for (int msgRead = 0; msgRead < 1000; msgRead ++) {
+            for (int msgRead = 0; msgRead < 10; msgRead ++) {
                 if (client.isDone()) {
                     System.out.println("Error: " + client.getExitEvent().getMessage());
                     break;
@@ -81,6 +77,8 @@ public class SampleStream {
                     }
                 } catch (JSONException ex) {
                     System.out.println("JSON Error: " + ex);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
