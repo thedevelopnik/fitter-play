@@ -13,6 +13,7 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-entitymanager" % "4.3.7.Final",
   "com.twitter" % "hbc-core" % "2.2.0",
   "org.slf4j" % "slf4j-simple" % "1.7.21",
-  "org.json" % "json" % "20160212"
+  "org.json" % "json" % "20160212",
+  "com.typesafe.akka" % "akka-actor_2.11" % "2.4.4"
 )
 
